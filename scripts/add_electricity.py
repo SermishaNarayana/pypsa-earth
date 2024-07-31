@@ -419,7 +419,6 @@ def attach_conventional_generators(
         .rename(index=lambda s: "C" + str(s))
     )
     ppl["efficiency"] = ppl.efficiency.fillna(ppl.efficiency)
-
     logger.info(
         "Adding {} generators with capacities [GW] \n{}".format(
             len(ppl), ppl.groupby("carrier").p_nom.sum().div(1e3).round(2)
@@ -438,7 +437,7 @@ def attach_conventional_generators(
         marginal_cost=ppl.marginal_cost,
         capital_cost=ppl.capital_cost,
         build_year=ppl.datein.fillna(0).astype(int),
-        lifetime=(ppl.dateout - ppl.datein).fillna(np.inf),
+        lifetime=(ppl.dateout.replace(' ','0').astype(int) - ppl.datein).fillna(np.inf),
     )
 
     for carrier in conventional_config:
