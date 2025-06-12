@@ -3568,6 +3568,7 @@ if __name__ == "__main__":
         snakemake.params.costs["fill_values"],
         snakemake.params.costs["scenario"],
         snakemake.params.costs["financial_case"],
+        snakemake.params.costs
         Nyears,
     )
 
@@ -3578,6 +3579,7 @@ if __name__ == "__main__":
         snakemake.params.costs["fill_values"],
         snakemake.params.costs["scenario"],
         snakemake.params.costs["financial_case"],
+        snakemake.params.costs
         Nyears,
     )
 

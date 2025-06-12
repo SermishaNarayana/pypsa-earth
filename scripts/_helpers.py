@@ -945,6 +945,7 @@ def prepare_costs(
     fill_values: dict,
     scenario: str,
     market: str,
+    config_costs: dict,
     Nyears: float | int = 1,
 ):
     # set all asset costs and other parameters
@@ -968,6 +969,16 @@ def prepare_costs(
         costs.loc[:, "value"].unstack(level=1).groupby("technology").sum(min_count=1)
     )
     costs = costs.fillna(fill_values)
+
+    for attr in ("investment", "lifetime", "FOM", "VOM", "efficiency", "fuel"):
+        overwrites = config_costs.get(attr)
+        if overwrites is not None:
+            overwrites = pd.Series(overwrites)
+            costs.loc[overwrites.index, attr] = overwrites
+            logger.info(
+                f"Overwriting {attr} of {overwrites.index} to {overwrites.values}"
+            )
+
 
     def annuity_factor(v):
         return annuity(v["lifetime"], v["discount rate"]) + v["FOM"] / 100
