@@ -3083,17 +3083,27 @@ def add_industry_heating(n, costs, market, scenario):
         n.buses.carrier == "industry heat demand(150-250C)"
     ].index
 
-    nodes_low = low_temp_buses.str.split(" ").str[0]
-    nodes_medium = medium_temp_buses.str.split(" ").str[0]
-    nodes_high = high_temp_buses.str.split(" ").str[0]
+    #nodes_low = low_temp_buses.str.split(" ").str[0]
+    #nodes_medium = medium_temp_buses.str.split(" ").str[0]
+    #nodes_high = high_temp_buses.str.split(" ").str[0]
 
-    # assert (nodes_low.isin(n.buses.index)).all()
-    # assert (nodes_medium.isin(n.buses.index)).all()
-    # assert (nodes_high.isin(n.buses.index)).all()
+    if snakemake.config["cluster_options"]["alternative_clustering"]:
+        nodes_low = low_temp_buses.str.split(" ").str[0]
+        nodes_medium = medium_temp_buses.str.split(" ").str[0]
+        nodes_high = high_temp_buses.str.split(" ").str[0]
+    else:
+        nodes_low = pd.Series(low_temp_buses.to_series().apply(lambda x: " ".join(x.split(" ")[0:2])).values)
+        nodes_medium = pd.Series(medium_temp_buses.to_series().apply(lambda x: " ".join(x.split(" ")[0:2])).values)
+        nodes_high = pd.Series(high_temp_buses.to_series().apply(lambda x: " ".join(x.split(" ")[0:2])).values)
 
-    # assert (low_temp_buses.isin(n.buses.index)).all()
-    # assert (medium_temp_buses.isin(n.buses.index)).all()
-    # assert (high_temp_buses.isin(n.buses.index)).all()
+
+    assert (nodes_low.isin(n.buses.index)).all()
+    assert (nodes_medium.isin(n.buses.index)).all()
+    assert (nodes_high.isin(n.buses.index)).all()
+
+    assert (low_temp_buses.isin(n.buses.index)).all()
+    assert (medium_temp_buses.isin(n.buses.index)).all()
+    assert (high_temp_buses.isin(n.buses.index)).all()
 
     # Add carriers if not already present
     carriers = [
@@ -3117,7 +3127,7 @@ def add_industry_heating(n, costs, market, scenario):
     n.madd(
         "Store",
         nodes_high + " molten salt store",
-        bus=nodes_high + " molten salt store",
+        bus=(nodes_high + " molten salt store").tolist(),
         carrier="molten salt store",
         e_nom_extendable=True,
         capital_cost=costs.at["low-temp molten salt store", "fixed"],
@@ -3131,7 +3141,7 @@ def add_industry_heating(n, costs, market, scenario):
     n.madd(
         "Link",
         nodes_high + " molten salt discharger",
-        bus0=nodes_high + " molten salt store",
+        bus0=(nodes_high + " molten salt store").tolist(),
         bus1=high_temp_buses,
         carrier="low-temp molten salt discharger",
         p_nom_extendable=True,
@@ -3148,7 +3158,7 @@ def add_industry_heating(n, costs, market, scenario):
         "Link",
         nodes_high + " molten salt charger",
         bus0=high_temp_buses,
-        bus1=nodes_high + " molten salt store",
+        bus1=(nodes_high + " molten salt store").tolist(),
         carrier="low-temp molten salt charger",
         p_nom_extendable=True,
         # capital_cost=costs.at["low-temp molten salt charger", "fixed"],
@@ -3188,7 +3198,7 @@ def add_industry_heating(n, costs, market, scenario):
         "Link",
         nodes_low + " industrial heat pump high temperature",
         bus0=nodes_low,
-        bus1=low_temp_buses,
+        bus1=low_temp_buses.tolist(),
         carrier="industrial heat pump high temperature",
         p_nom_extendable=True,
         capital_cost=costs.at["industrial heat pump high temperature", "fixed"] * 1000,
@@ -3203,7 +3213,7 @@ def add_industry_heating(n, costs, market, scenario):
     n.madd(
         "Link",
         nodes_medium + " industrial heat pump high temperature",
-        bus0=nodes_medium,
+        bus0=nodes_medium.tolist(),
         bus1=medium_temp_buses,
         carrier="industrial heat pump high temperature",
         p_nom_extendable=True,
