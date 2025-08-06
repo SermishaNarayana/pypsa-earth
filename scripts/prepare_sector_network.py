@@ -960,6 +960,36 @@ def add_co2(n, costs, co2_network):
         p_nom_extendable=True,
     )
 
+<<<<<<< HEAD
+=======
+    # logger.info("Adding CO2 network.")
+#   co2_links = create_network_topology(n, "CO2 pipeline ")
+
+#   cost_onshore = (
+#       (1 - co2_links.underwater_fraction)
+#       * costs.at["CO2 pipeline", "fixed"]
+#       * co2_links.length
+#   )
+#   cost_submarine = (
+#       co2_links.underwater_fraction
+#       * costs.at["CO2 submarine pipeline", "fixed"]
+#       * co2_links.length
+#   )
+#    capital_cost = cost_onshore + cost_submarine
+
+#   n.madd(
+#       "Link",
+#       co2_links.index,
+#       bus0=co2_links.bus0.values + " co2 stored",
+#       bus1=co2_links.bus1.values + " co2 stored",
+#       p_min_pu=-1,
+#       p_nom_extendable=True,
+#       length=co2_links.length.values,
+#       capital_cost=capital_cost.values,
+#       carrier="CO2 pipeline",
+#       lifetime=costs.at["CO2 pipeline", "lifetime"],
+#    )
+    
 
     n.madd(
         "Store",
@@ -970,7 +1000,6 @@ def add_co2(n, costs, co2_network):
         carrier="co2 stored",
         bus=spatial.co2.nodes,
     )
-
     
     if co2_network:
 
