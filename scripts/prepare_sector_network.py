@@ -960,8 +960,6 @@ def add_co2(n, costs, co2_network):
         p_nom_extendable=True,
     )
 
-<<<<<<< HEAD
-=======
     # logger.info("Adding CO2 network.")
 #   co2_links = create_network_topology(n, "CO2 pipeline ")
 
