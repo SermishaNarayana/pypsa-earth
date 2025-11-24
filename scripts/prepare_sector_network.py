@@ -3061,7 +3061,7 @@ def add_geothermal_industry_supply(n, supply_curve):
                     link_name + " producer",
                     bus0=reservoir_bus,
                     carrier=tech.split(" ")[0],
-                    capital_cost=capex_annualized,
+                    capital_cost=capex_annualized*1.6,
                     marginal_cost=row["opex[USD/MWh]"],
                     p_nom_max=row["heat_demand[MW]"],
                     p_max_pu=1.25,  # generation boost after storing in reservoir
@@ -3508,7 +3508,7 @@ def attach_enhanced_geothermal(n, potential_fn, mode):
         for i, (supply_curve_step, row) in enumerate(ss.iterrows()):
             capacity = row["p_nom_max[MWe]"]
             # Annuitize the capital cost
-            capital_cost = row["capital_cost[USD/MWe]"] * annuity_factor
+            capital_cost = row["capital_cost[USD/MWe]"] * annuity_factor * 1.6
             opex = row["opex[USD/MWhe]"]
 
             # Build an identifier that encodes the region name and supply-curve step
@@ -3644,7 +3644,7 @@ def add_geothermal_district_heating_supply(n, egs_potential):
             carrier="geothermal district heat",
             p_nom_max=capacity,
             p_max_pu=1.25,  # generation boost after storing in reservoir
-            capital_cost=capital_cost,
+            capital_cost=capital_cost*1.6,
             marginal_cost=opex,
             p_nom_extendable=True,
         )
@@ -3734,7 +3734,7 @@ def add_geothermal_district_cooling_supply(n, egs_potential):
             carrier="geothermal district cooling",
             p_nom_max=capacity,
             p_max_pu=1.25,  # generation boost after storing in reservoir
-            capital_cost=capital_cost,
+            capital_cost=capital_cost*1.6,
             marginal_cost=opex,
             p_nom_extendable=True,
             efficiency=0.72, # efficiency of absorption chillers, taken from https://www.energy.gov/sites/prod/files/2017/06/f35/CHP-Absorption%20Chiller-compliant.pdf
